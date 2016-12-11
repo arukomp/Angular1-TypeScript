@@ -3,9 +3,15 @@
         <link rel="stylesheet" href="css/main.min.css">
     </head>
     <body ng-app="app">
-        <div class="testing" ng-controller="AppController">
+        <div class="testing" ng-controller="AppController as ctrl">
             <p class="another">Hello World!</p>
             <p>My name is {{ name }}</p>
+            <button ng-click="ctrl.AskToSayHi()">Ask to say hi!</button>
+
+            <div ng-repeat="hero in ctrl.heroes">
+                <hero-details hero="hero"></hero-details>
+            </div>
+
         </div>
 
         <script src="js/lib.min.js"></script>

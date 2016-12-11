@@ -6,9 +6,15 @@
         <!-- endbuild -->
     </head>
     <body ng-app="app">
-        <div class="testing" ng-controller="AppController">
+        <div class="testing" ng-controller="AppController as ctrl">
             <p class="another">Hello World!</p>
             <p>My name is {{ name }}</p>
+            <button ng-click="ctrl.AskToSayHi()">Ask to say hi!</button>
+
+            <div ng-repeat="hero in ctrl.heroes">
+                <hero-details hero="hero"></hero-details>
+            </div>
+
         </div>
 
         <!-- build:js js/lib.min.js -->
@@ -17,7 +23,7 @@
         <!-- endbuild -->
 
         <!-- build:js js/app.min.js -->
-        <script src="./js/app.js"></script>
+        <script src="./app.js"></script>
         <!-- endbuild -->
     </body>
 </html>

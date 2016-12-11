@@ -4,6 +4,7 @@ var useref = require('gulp-useref');
 var uglify = require('gulp-uglify');
 var gulpIf = require('gulp-if');
 var cssnano = require('gulp-cssnano');
+var tsc = require('gulp-typescript');
 var del = require('del');
 var runSequence = require('run-sequence');
 var browserSync = require('browser-sync').create();
@@ -14,7 +15,7 @@ var minifyFiles = false;
 gulp.task('default', ['build']);
 
 gulp.task('build', function(callback) {
-    runSequence('clean:dist', 'sass', 'useref', callback);
+    runSequence(['sass', 'typescript'], 'useref', callback);
 })
 
 gulp.task('build:min', function(callback) {
@@ -58,4 +59,13 @@ gulp.task('useref', function() {
 
 gulp.task('clean:dist', function() {
     return del.sync('dist');
+});
+
+gulp.task('typescript', function() {
+    return gulp.src('app/**/*.ts')
+        .pipe(tsc({
+            target: 'ES5',
+            outFile: 'app.js'
+        }))
+        .pipe(gulp.dest('app'));
 });
