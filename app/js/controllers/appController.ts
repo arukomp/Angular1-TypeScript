@@ -5,6 +5,7 @@ namespace app.controllers {
 
         constructor(public scope: any) {
             scope.name = "Arunas";
+            scope.$on("askToSayHi", this.AskToSayHi.bind(this));
         }
 
         public heroes: Array<Hero> = [

@@ -11,10 +11,8 @@
             <p>My name is {{ name }}</p>
             <button ng-click="ctrl.AskToSayHi()">Ask to say hi!</button>
 
-            <div ng-repeat="hero in ctrl.heroes">
-                <hero-details hero="hero"></hero-details>
-            </div>
-
+            <hero-details ng-repeat="hero in ctrl.heroes" hero="hero"></hero-details>
+            
         </div>
 
         <!-- build:js js/lib.min.js -->
