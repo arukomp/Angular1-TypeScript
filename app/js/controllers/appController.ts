@@ -19,6 +19,10 @@ namespace app.controllers {
             this.scope.$broadcast("sayHi");
         }
 
+        AddNewHero(): void {
+            this.heroes.unshift(new Hero("<Hero Name>", HeroClass.Warlock, 400, 300));
+        }
+
     }
 
     app.mainModule.controller("AppController", AppController);

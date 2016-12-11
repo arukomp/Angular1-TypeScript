@@ -11,7 +11,7 @@ function HeroDetails() {
                 <hr />
                 <h3>Hero Details</h3>
                 <label>Name: </label><b><editable-field value="hero.name"></editable-field></b><br />
-                <label>Class: </label>{{ hero.GetClass() }}<br />
+                <label>Class: </label><editable-field enum="heroCtrl.HeroClass" value="hero.heroClass"></editable-field><br />
                 <label>Health: </label><editable-field value="hero.health"></editable-field><br />
                 <label>Mana: </label><editable-field value="hero.mana"></editable-field><br />
                 <button ng-click="sayHello()">Say Hello!</button>
@@ -31,6 +31,8 @@ namespace app.controllers {
 
     class HeroDetailsController {
         static $inject = ["$scope"];
+
+        public HeroClass = HeroClass;
 
         constructor(public $scope) {
             $scope.sayHello = this.SayHello.bind(this);

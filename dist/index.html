@@ -8,6 +8,8 @@
             <p>My name is {{ name }}</p>
             <button ng-click="ctrl.AskToSayHi()">Ask to say hi!</button>
 
+            <br />
+            <button ng-click="ctrl.AddNewHero()">Add a new hero!</button>
             <hero-details ng-repeat="hero in ctrl.heroes" hero="hero"></hero-details>
             
         </div>

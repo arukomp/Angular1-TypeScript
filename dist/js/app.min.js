@@ -22,6 +22,9 @@ var app;
             AppController.prototype.AskToSayHi = function () {
                 this.scope.$broadcast("sayHi");
             };
+            AppController.prototype.AddNewHero = function () {
+                this.heroes.unshift(new Hero("<Hero Name>", HeroClass.Warlock, 400, 300));
+            };
             return AppController;
         }());
         AppController.$inject = ["$scope"];
@@ -33,9 +36,10 @@ function EditableField() {
     return {
         restrict: "E",
         scope: {
-            value: "="
+            value: "=",
+            enum: "<"
         },
-        template: "\n            <span ng-click=\"fieldCtrl.Edit($event)\">{{ value }}</span>\n            <input ng-model=\"value\" ng-blur=\"fieldCtrl.BlurTriggered($event)\" hidden=\"true\" />\n        ",
+        template: "\n            <span ng-click=\"fieldCtrl.Edit($event)\">{{ fieldCtrl.GetValue() }}</span>\n            <input ng-model=\"value\" ng-blur=\"fieldCtrl.BlurTriggered($event)\" hidden=\"true\" />\n            <select ng-model=\"value\" hidden=\"true\" ng-blur=\"fieldCtrl.BlurTriggered($event)\">\n                <option ng-repeat=\"(heroClass, heroClassName) in enum\" value=\"{{ heroClass }}\">{{ heroClassName }}</option>\n            </select>\n        ",
         controller: "EditableFieldController",
         controllerAs: "fieldCtrl"
     };
@@ -46,10 +50,17 @@ var app;
     var controllers;
     (function (controllers) {
         var EditableFieldController = (function () {
-            function EditableFieldController() {
+            function EditableFieldController(scope) {
+                this.scope = scope;
             }
             EditableFieldController.prototype.Edit = function ($event) {
-                var el = $event.target.nextElementSibling;
+                var el;
+                if (this.scope.enum) {
+                    el = $event.target.parentElement.querySelector("select");
+                }
+                else {
+                    el = $event.target.parentElement.querySelector("input");
+                }
                 $event.target.hidden = true;
                 el.hidden = false;
                 el.focus();
@@ -57,11 +68,19 @@ var app;
             EditableFieldController.prototype.BlurTriggered = function ($event) {
                 var el = $event.target;
                 el.hidden = true;
-                el.previousElementSibling.hidden = false;
+                el.parentElement.querySelector("span").hidden = false;
+            };
+            EditableFieldController.prototype.GetValue = function () {
+                if (this.scope.enum) {
+                    return this.scope.enum[this.scope.value];
+                }
+                else {
+                    return this.scope.value;
+                }
             };
             return EditableFieldController;
         }());
-        EditableFieldController.$inject = [];
+        EditableFieldController.$inject = ["$scope"];
         app.mainModule.controller("EditableFieldController", EditableFieldController);
     })(controllers = app.controllers || (app.controllers = {}));
 })(app || (app = {}));
@@ -71,7 +90,7 @@ function HeroDetails() {
         scope: {
             hero: "<"
         },
-        template: "\n            <div>\n                <hr />\n                <h3>Hero Details</h3>\n                <label>Name: </label><b><editable-field value=\"hero.name\"></editable-field></b><br />\n                <label>Class: </label>{{ hero.GetClass() }}<br />\n                <label>Health: </label><editable-field value=\"hero.health\"></editable-field><br />\n                <label>Mana: </label><editable-field value=\"hero.mana\"></editable-field><br />\n                <button ng-click=\"sayHello()\">Say Hello!</button>\n                <button ng-click=\"askToSayHi()\">Ask to say hi!</button>\n            </div>\n        ",
+        template: "\n            <div>\n                <hr />\n                <h3>Hero Details</h3>\n                <label>Name: </label><b><editable-field value=\"hero.name\"></editable-field></b><br />\n                <label>Class: </label><editable-field enum=\"heroCtrl.HeroClass\" value=\"hero.heroClass\"></editable-field><br />\n                <label>Health: </label><editable-field value=\"hero.health\"></editable-field><br />\n                <label>Mana: </label><editable-field value=\"hero.mana\"></editable-field><br />\n                <button ng-click=\"sayHello()\">Say Hello!</button>\n                <button ng-click=\"askToSayHi()\">Ask to say hi!</button>\n            </div>\n        ",
         controller: "HeroDetailsController",
         controllerAs: "heroCtrl"
     };
@@ -84,6 +103,7 @@ var app;
         var HeroDetailsController = (function () {
             function HeroDetailsController($scope) {
                 this.$scope = $scope;
+                this.HeroClass = HeroClass;
                 $scope.sayHello = this.SayHello.bind(this);
                 $scope.askToSayHi = this.AskToSayHi.bind(this);
                 $scope.$on("sayHi", this.SayHello.bind(this));
